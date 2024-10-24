@@ -63,7 +63,7 @@ class DatasetHandler:
         print(f"データを {self.train_dir} と {self.test_dir} に保存しました。")
 
     def preprocess(self, size=(128, 128)):
-        """画像のリサイズなどの前処理を行う"""
+        """前処理を行う(option)"""
         for img_path in self.data:
             img = Image.open(img_path)
             img = img.resize(size)
