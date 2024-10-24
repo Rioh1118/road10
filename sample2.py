@@ -1,11 +1,32 @@
 """
-データを読み込んでそれをtrainとtestに分割し、ディレクトリ毎に保存する。
+データセットの読み込み
 """
 
-from road_sign import DatasetHandler
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 
-data_handler = DatasetHandler(data_dir="./data/project18", train_dir="./data/train", test_dir="./data/test")
+# 画像の前処理
+transform = transforms.Compose([
+    transforms.Resize((128, 128)),
+    transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+])
 
-data_handler.load_data()
-data_handler.split_data()
-data_handler.save_data()
+train_dataset = datasets.ImageFolder(root='./data/project 18/train', transform=transform)
+test_dataset = datasets.ImageFolder(root='./data/project 18/test', transform=transform)
+
+#rでバッチ処理を行う
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+
+# クラス名を取得
+class_names = train_dataset.classes
+print(f"クラス名: {class_names}")
+
+
+
+# データローダーからバッチを取得する例
+for images, labels in train_loader:
+    print(f"バッチ内の画像サイズ: {images.size()}")
+    print(f"バッチ内のラベル: {labels}")
+    break  # 最初のバッチのみ表示
