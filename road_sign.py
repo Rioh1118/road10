@@ -62,6 +62,30 @@ class DatasetHandler:
         self._save_split_data(self.test_data, self.test_labels, self.test_dir)
         print(f"データを {self.train_dir} と {self.test_dir} に保存しました。")
 
+
+    def convert_jfif_to_jpg_or_png(self, target_format='jpg'):
+        """jfifファイルを指定されたフォーマット（jpgかpng）に変換する"""
+        valid_formats = ['jpg', 'png']
+        if target_format not in valid_formats:
+            raise ValueError(f"対応しているフォーマットは{valid_formats}のみです。")
+
+        for root, dirs, files in os.walk(self.data_dir):
+            for file in files:
+                if file.endswith('.jfif'):
+                    file_path = os.path.join(root, file)
+                    img = Image.open(file_path)
+                    new_file_path = file_path.replace('.jfif', f'.{target_format}')
+                    save_format = target_format.upper()
+                    if save_format == 'JPG':
+                        save_format = 'JPEG'
+
+                    img = img.convert("RGB")  # RGBに変換してから保存
+                    img.save(new_file_path, save_format)
+                    os.remove(file_path)  # 旧ファイルを削除
+                    print(f"{file_path} を {new_file_path} に変換しました。")
+        print("jfifファイルの変換が完了しました。")
+
+
     def preprocess(self, size=(128, 128)):
         """前処理を行う(option)"""
         for img_path in self.data:
